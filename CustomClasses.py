@@ -4,7 +4,17 @@ import xml.etree.ElementTree as ET
 ITEM_CONSUMABLE = 0
 ITEM_EQUIPABLE = 1
 
+EQUIP_HELM = 0
+EQUIP_CHEST = 1
+EQUIP_LEGS = 2
+EQUIP_FOOT = 3
+EQUIP_WEAPON = 4
+EQUIP_OFFHAND = 5
+EQUIP_TRINKET = 6
+
 NONE = 0
+CON_HEALTH = 1
+CON_POWER = 2
 
 class EntityBase(object):
     def __init__(self, name, pos):
@@ -26,6 +36,7 @@ class ItemBase(object):
     def get_data(self, file):
         tree = ET.parse(file)
         root = tree.getroot()
+        return True #PLACE HOLDER
 
 
 
@@ -76,7 +87,8 @@ class ItemStand(EntityBase):
         if self.type == ITEM_CONSUMABLE:
             self.potable = param
         else:
-            pass
+            self.equipable = param[1]
+            self.item = Equipable(param[0], param[1], param[3])
 
         self.cool_down = 10
 
@@ -100,3 +112,5 @@ class ItemStand(EntityBase):
                     self.pick_up(p)
         else:
             self.cool_down -= dt
+            if self.cool_down < 0:
+                self.cool_down = 0
