@@ -119,7 +119,7 @@ class Vector2(object):
         
         return angle
     
-    def getNormalized(self):
+    def normalizedCopy(self):
         v = self.copy()
         v.normalize();
         return v
