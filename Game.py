@@ -7,6 +7,11 @@ resolution = (600, 800)
 window = pygame.display.set_mode(resolution)
 clock = pygame.time.Clock()
 
+
+
+
+
+
 done = False
 while not done:
     dtime = clock.tick()

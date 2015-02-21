@@ -1,5 +1,7 @@
 import mymath
 import xml.etree.ElementTree as ET
+import math
+import random
 
 ITEM_CONSUMABLE = 0
 ITEM_EQUIPABLE = 1
@@ -39,7 +41,6 @@ class ItemBase(object):
         return True #PLACE HOLDER
 
 
-
 class Player(EntityBase):
     def __init__(self, health):
         self.name = "Hero"
@@ -52,8 +53,6 @@ class Player(EntityBase):
 
     def render(self):
         pass
-
-
 
 
 class Enemy(EntityBase):
@@ -71,7 +70,6 @@ class Equipable(ItemBase):
     def __init__(self, name, type, file):
         ItemBase.__init__(name, file)
         self.type = type
-
 
 
 class ItemStand(EntityBase):
@@ -114,3 +112,22 @@ class ItemStand(EntityBase):
             self.cool_down -= dt
             if self.cool_down < 0:
                 self.cool_down = 0
+
+
+class Floor(object):
+    def __init__(self, seed=-1):
+        if seed == -1:
+            self.seed = random.randint(1000, 9999)
+        else:
+            if isinstance(seed, int) and 1000 <= seed <= 9999:
+                self.seed = seed
+            else:
+                raise TypeError("Seed needs to be an Integer from 1000 to 9999.")
+
+    def generate(self):
+        pass
+
+class  Room(object):
+    def __init__(self):
+        pass
+
