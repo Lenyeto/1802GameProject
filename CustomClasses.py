@@ -2,6 +2,7 @@ import mymath
 import xml.etree.ElementTree as ET
 import math
 import random
+import pygame
 
 ITEM_CONSUMABLE = 0
 ITEM_EQUIPABLE = 1
@@ -17,6 +18,23 @@ EQUIP_TRINKET = 6
 NONE = 0
 CON_HEALTH = 1
 CON_POWER = 2
+
+DOWN = 0
+RIGHT = 1
+UP = 2
+LEFT = 3
+
+H1_SWORD = 0
+H1_MACE = 1
+H1_AXE = 2
+H2_SWORD = 3
+H2_MACE = 4
+H2_AXE = 5
+BOW = 6
+
+NORMAL = 0
+LOOT = 1
+BOSS = 2
 
 class EntityBase(object):
     def __init__(self, name, pos):
@@ -42,11 +60,19 @@ class ItemBase(object):
 
 
 class Player(EntityBase):
-    def __init__(self, health):
+    def __init__(self, health, pos):
+        EntityBase.__init__(self, "Hero", pos)
         self.name = "Hero"
         self.health = health
         self.equipment = {'Helmet', 'Chest', 'Legs', 'Foot', 'MainHand', 'OffHand', 'Consumable'}
         self.equipment['Trinkets'] = []
+        self.aim = DOWN
+
+
+
+    def attack(self):
+        if self.equipment['MainHand'].type == H1_SWORD:
+            pass
 
     def update(self):
         pass
@@ -115,7 +141,7 @@ class ItemStand(EntityBase):
 
 
 class Floor(object):
-    def __init__(self, seed=-1):
+    def __init__(self, num_rooms=-1, seed=-1):
         if seed == -1:
             self.seed = random.randint(1000, 9999)
         else:
@@ -124,10 +150,33 @@ class Floor(object):
             else:
                 raise TypeError("Seed needs to be an Integer from 1000 to 9999.")
 
+        random.seed(self.seed)
+
+        if num_rooms == -1:
+            self.num_rooms = random.randint(5, 15)
+
+        self.rooms = []
+
+        for i in range(self.num_rooms):
+            num_loot = 0
+            for l in self.rooms:
+                if l.type == LOOT:
+                    num_loot += 1
+            self.rooms.append(Room())
+
+
     def generate(self):
         pass
 
 class  Room(object):
-    def __init__(self):
-        pass
+    def __init__(self, type):
+        self.type = type
+        if self.type == NORMAL:
+            pass
+        elif self.type == LOOT:
+            pass
+        elif self.type == BOSS:
+            pass
+
+
 
