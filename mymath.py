@@ -1,5 +1,6 @@
 import math
 
+
 class Vector2(object):
     def __init__(self, x=0, y=0):
         self.x = float(x)
@@ -138,14 +139,6 @@ class Vector2(object):
         self.x = origin.x + self.x * ca + self.y * sa
         self.y = origin.y + old_x * -sa + self.y * ca
 
-    def distance1(self, other):
-        distance = math.sqrt((self.x - other.x) ** 2 + (self.y - other.y) ** 2)
-        return distance
-
-    #
-
-    def dot(self, other):
-        pass
-
-    def distance2(self, other):
-        pass
+    def Dot(self, other):
+        tmp = self.x * other.x + self.y * other.y
+        return tmp

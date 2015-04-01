@@ -1,6 +1,8 @@
 import mymath
 import xml.etree.ElementTree as ET
 import pygame
+import math
+import random
 
 ITEM_CONSUMABLE = 0
 ITEM_EQUIPABLE = 1
@@ -25,12 +27,96 @@ LEFT = mymath.Vector2(-1, 0)
 
 
 class EntityBase(object):
-    def __init__(self, name, pos):
+    def __init__(self, name, pos, velocity=mymath.Vector2(0, 0)):
         self.name = name
         self.pos = pos
+        self.velocity = velocity
 
     def ai_player(self, player):
         pass
+
+class Projectile(EntityBase):
+    def __init__(self, pos, velocity, height=1):
+        self.pos = pos
+        self.velocity = velocity
+        self.height = height
+        self.isPiercing = False
+        self.attack = 5
+
+    def update(self, dt, entityList):
+        self.pos += self.velocity * dt
+        for e in entityList:
+            tmp = self.pos - e.pos
+            dist = tmp.Dot(tmp)
+            if dist < 16**2:
+                self.damage(e)
+                return True
+        return False
+
+    def damage(self, other):
+        other.health -= self.attack
+
+    def render(self, surface):
+        pygame.draw.circle(surface, (255, 0, 0), (int(self.pos.x), int(self.pos.y)), 5)
+
+
+class CosProjectile(Projectile):
+    def __init__(self, pos, velocity, height=1):
+        Projectile.__init__(self, pos, velocity, height)
+        self.acum = 0
+
+    def update(self, dt, entityList):
+        self.acum += dt
+        # FIX TO WORK DOWNWARDS
+        self.velocity.y = math.cos(self.acum) * 100
+        if Projectile.update(self, dt, entityList):
+            return True
+
+class FireFlyProj(Projectile):
+    def __init__(self, pos, velocity, height=1):
+        Projectile.__init__(self, pos, velocity, height)
+        self.acum = 0
+
+    def update(self, dt, entityList):
+        self.acum += dt
+        self.velocity.y = math.cos(self.acum) * 10
+        self.velocity.x = math.sin(self.acum) * 10
+        if Projectile.update(self, dt, entityList):
+            return True
+
+
+class TrackingProj(Projectile):
+    def __init__(self, pos, velocity, height=1):
+        Projectile.__init__(self, pos, velocity, height)
+        self.acum = 0
+        self.target = NONE
+        self.speed = velocity.Dot(velocity) ** 0.5
+
+    def update(self, dt, entityList):
+        if self.target == NONE:
+            distanceList = []
+            distanceList2 = []
+            for i in entityList:
+                tmp = self.pos - i.pos
+                dist = tmp.Dot(tmp)
+                distanceList.append(dist)
+                distanceList2.append(dist)
+            distanceList.sort()
+            tmp = distanceList2.index(distanceList[0])
+            self.target = entityList[tmp]
+        else:
+            tmp = self.target.pos - self.pos
+            tmp = tmp.getNormalized()
+            tmp *= dt
+            self.velocity += tmp
+            self.velocity = self.velocity.getNormalized()
+            self.velocity *= self.speed
+        if Projectile.update(self, dt, entityList):
+            return True
+
+    def render(self, surface):
+        Projectile.render(self, surface)
+
 
 
 class Player(EntityBase):
@@ -46,11 +132,12 @@ class Player(EntityBase):
         self.invincibility_period = 0
         self.attack_delay = 1000
         self.cur_delay = 0
+        self.sub_entities = []
 
         self.tmp_key_list = []
 
         if debug:
-            self.equipment[EQUIP_WEAPON] = "Sword"
+            self.equipment[EQUIP_WEAPON] = "Bow"
 
 
     def update(self, dt, list_of_keys, list_of_entities):
@@ -58,6 +145,10 @@ class Player(EntityBase):
             self.cur_delay -= dt
         if self.cur_delay < 0:
             self.cur_delay = 0
+
+        for i in self.sub_entities:
+            if i.update(dt, list_of_entities):
+                self.sub_entities.remove(i)
 
         if pygame.K_UP in list_of_keys:
             self.direction = UP
@@ -92,6 +183,9 @@ class Player(EntityBase):
 
     def render(self, surface):
         pygame.draw.circle(surface, (255, 0, 0), (int(self.pos.x), int(self.pos.y)), 20)
+        for i in self.sub_entities:
+            i.render(surface)
+
 
     def attack(self, list_of_entities):
         self.cur_delay = self.attack_delay
@@ -99,8 +193,13 @@ class Player(EntityBase):
             for i in list_of_entities:
                 tmp = i.pos - self.pos
                 tmp = tmp.Dot(tmp)
-                if tmp < 32 ** 2:
+                if tmp < 64 ** 2:
                     i.hit(5, self.direction * 20)
+        elif self.equipment[EQUIP_WEAPON] == "Bow":
+            #self.sub_entities.append(TestProj(self.pos.copy(), self.direction.copy()))
+            pass
+        elif self.equipment[EQUIP_WEAPON] == "Spell":
+            pass
 
 
 
@@ -157,17 +256,31 @@ class Dummy(EntityBase):
         EntityBase.__init__(self, "DUMMY", pos)
         self.health = 100
         self.invincible = 0
+        self.show_health = 0
 
     def hit(self, damage, knockback=mymath.Vector2(0, 0)):
         self.health -= damage
         self.pos += knockback
-        print("HIT")
+        self.show_health = 10
 
     def update(self, dt):
         if self.invincible > 0:
             self.invincible -= dt
         if self.invincible < 0:
             self.invincible = 0
+        if self.show_health > 0:
+            self.show_health -= dt
+        if self.show_health < 0:
+            self.show_health = 0
+        if self.health <= 0:
+            return True
+        #self.velocity.x = math.cos(dt) * dt
+        self.pos += self.velocity
+        return False
 
     def render(self, surface):
         pygame.draw.circle(surface, (0, 255, 0), (int(self.pos.x), int(self.pos.y)), 20)
+        #if self.show_health > 0:
+        tmpX = 40
+        tmpX *= self.health / 100
+        pygame.draw.rect(surface, (125, 125, 125), (int(self.pos.x) - tmpX/2, int(self.pos.y - 10) - 20, tmpX, 5))

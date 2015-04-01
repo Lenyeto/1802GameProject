@@ -1,34 +1,19 @@
 import pygame
-from essen_vars import NONE, GAME, OPTIONS, SINGLEPLAYER
-import CustomClasses
+import EntitiyClasses
+import MapSystem
 import mymath
 
 pygame.init()
 
-resolution = (600, 800)
+resolution = (1200, 800)
 
 window = pygame.display.set_mode(resolution)
 clock = pygame.time.Clock()
 
-mode = NONE
+list_of_keys = []
 
-floors = []
-curFloor = None
-curRoom = None
-player = None
-
-if __name__ == "__main__":
-    mode = GAME
-
-    #CustomClasses.Floor
-    floors.append(CustomClasses.Floor())
-    curFloor = floors[0]
-    curRoom = curFloor.rooms[0]
-
-    player = CustomClasses.Player(100, mymath.Vector2(300, 400))
-
-
-
+list_of_entities= [EntitiyClasses.Dummy(mymath.Vector2(200, 200)), EntitiyClasses.Dummy(mymath.Vector2(500, 500))]
+Player = EntitiyClasses.Player(mymath.Vector2(100, 100), 100, True)
 
 done = False
 while not done:
@@ -38,16 +23,21 @@ while not done:
     for evt in evtList:
         if evt.type == pygame.QUIT:
             done = True
+        elif evt.type == pygame.KEYDOWN:
+            list_of_keys.append(evt.key)
+        elif evt.type == pygame.KEYUP:
+            list_of_keys.remove(evt.key)
 
-    if mode == GAME:
-        pass
+    for i in list_of_entities:
+        if i.update(dtime):
+            list_of_entities.remove(i)
 
-    player.update(dtime, evtList)
+    Player.update(dtime, list_of_keys, list_of_entities)
 
-    curRoom.render()
-    player.render()
 
     window.fill((0, 0, 0))
-
+    Player.render(window)
+    for i in list_of_entities:
+        i.render(window)
     pygame.display.flip()
 pygame.quit()
