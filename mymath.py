@@ -137,3 +137,15 @@ class Vector2(object):
         old_x = self.x
         self.x = origin.x + self.x * ca + self.y * sa
         self.y = origin.y + old_x * -sa + self.y * ca
+
+    def distance1(self, other):
+        distance = math.sqrt((self.x - other.x) ** 2 + (self.y - other.y) ** 2)
+        return distance
+
+    #
+
+    def dot(self, other):
+        pass
+
+    def distance2(self, other):
+        pass

@@ -19,10 +19,15 @@ NONE = 0
 CON_HEALTH = 1
 CON_POWER = 2
 
-DOWN = 0
-RIGHT = 1
-UP = 2
-LEFT = 3
+DOWN = 1
+RIGHT = 2
+UP = 3
+LEFT = 4
+
+vUp = mymath.Vector2(0, -1)
+vDown = mymath.Vector2(0, 1)
+vRight = mymath.Vector2(1, 0)
+vLeft = mymath.Vector2(-1, 0)
 
 H1_SWORD = 0
 H1_MACE = 1
@@ -35,11 +40,14 @@ BOW = 6
 NORMAL = 0
 LOOT = 1
 BOSS = 2
+START = 3
 
 class EntityBase(object):
-    def __init__(self, name, pos):
+    def __init__(self, name, pos, vel=mymath.Vector2(0, 0)):
         self.name = name
         self.pos = pos
+        self.vel = vel
+        self.acc = mymath.Vector2(0, 0)
 
     def ai_player(self, player):
         pass
@@ -62,22 +70,42 @@ class ItemBase(object):
 class Player(EntityBase):
     def __init__(self, health, pos):
         EntityBase.__init__(self, "Hero", pos)
-        self.name = "Hero"
         self.health = health
         self.equipment = {'Helmet', 'Chest', 'Legs', 'Foot', 'MainHand', 'OffHand', 'Consumable'}
         self.equipment['Trinkets'] = []
-        self.aim = DOWN
-
-
+        self.aim = NONE
+        self.past_list_of_keys = []
 
     def attack(self):
         if self.equipment['MainHand'].type == H1_SWORD:
             pass
 
-    def update(self):
-        pass
+    def update(self, dt, list_of_keys):
+        self.pos += self.vel * dt
+        self.control(list_of_keys, dt)
 
-    def render(self):
+    def control(self, list_of_keys, dt):
+        if pygame.K_w in list_of_keys:
+            self.acc += vUp * dt
+        if pygame.K_s in list_of_keys:
+            self.acc += vDown * dt
+        if pygame.K_d in list_of_keys:
+            self.acc += vRight * dt
+        if pygame.K_a in list_of_keys:
+            self.acc += vLeft * dt
+
+        if pygame.K_LEFT in list_of_keys:
+            self.aim = LEFT
+        if pygame.K_RIGHT in list_of_keys:
+            self.aim = RIGHT
+        if pygame.K_UP in list_of_keys:
+            self.aim = UP
+        if pygame.K_DOWN in list_of_keys:
+            self.aim = DOWN
+
+        self.past_list_of_keys = list(list_of_keys)
+
+    def render(self, surface):
         pass
 
 
@@ -155,28 +183,45 @@ class Floor(object):
         if num_rooms == -1:
             self.num_rooms = random.randint(5, 15)
 
+        self.left, right, up, down = False
+
         self.rooms = []
 
-        for i in range(self.num_rooms):
-            num_loot = 0
-            for l in self.rooms:
-                if l.type == LOOT:
-                    num_loot += 1
-            self.rooms.append(Room())
-
-
     def generate(self):
-        pass
+        self.rooms.append(Room(START, (0, 0)))
+        for i in self.num_rooms:
+            cur_room = self.rooms[-1]
+            #Check Rooms Around The Current Room
+            self.left, right, up, down = False
+            for r in self.rooms:
+                if r.pos[0] == cur_room.pos[0] + 1:
+                    self.right = True
+                if r.pos[0] == cur_room.pos[0] - 1:
+                    self.left = True
+                if r.pos[1] == cur_room.pos[1] + 1:
+                    self.up = True
+                if r.pos[1] == cur_room.pos[1] - 1:
+                    self.down = True
+            if self.right and self.left and self.up and self.down:
+                if len(self.rooms) == self.num_rooms:
+                    pass
+                else:
+                    break
 
-class  Room(object):
-    def __init__(self, type):
+
+class Room(object):
+    def __init__(self, type, pos):
         self.type = type
+        self.pos = pos
         if self.type == NORMAL:
             pass
         elif self.type == LOOT:
             pass
         elif self.type == BOSS:
             pass
+        elif self.type == START:
+            pass
+
 
 
 

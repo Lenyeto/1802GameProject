@@ -42,6 +42,7 @@ while not done:
     if mode == GAME:
         pass
 
+    player.update(dtime, evtList)
 
     curRoom.render()
     player.render()
