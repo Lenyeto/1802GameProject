@@ -1,5 +1,6 @@
 import math
 
+
 class Vector2(object):
     def __init__(self, x=0, y=0):
         self.x = float(x)
@@ -119,7 +120,7 @@ class Vector2(object):
         
         return angle
     
-    def normalizedCopy(self):
+    def getNormalized(self):
         v = self.copy()
         v.normalize();
         return v
@@ -137,3 +138,7 @@ class Vector2(object):
         old_x = self.x
         self.x = origin.x + self.x * ca + self.y * sa
         self.y = origin.y + old_x * -sa + self.y * ca
+
+    def Dot(self, other):
+        tmp = self.x * other.x + self.y * other.y
+        return tmp
