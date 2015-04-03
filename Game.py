@@ -1,11 +1,12 @@
 import pygame
-import EntitiyClasses
 import MapSystem
+import EntitiyClasses
 import mymath
 
 pygame.init()
 
 resolution = (1200, 800)
+
 
 window = pygame.display.set_mode(resolution)
 clock = pygame.time.Clock()

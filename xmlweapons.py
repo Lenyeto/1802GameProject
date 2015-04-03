@@ -21,12 +21,12 @@ class Weapon(object):
                 self.weapon['type'] = str(s.attributes['type'].value)
                 self.weapon['range'] = int(s.attributes['range'].value)
                 self.weapon['velocity'] = int(s.attributes['velocity'].value)
+                self.weapon['wtype'] = str(s.attributes['wtype'].value)
 
         return self.weapon
 
+#pweapon = Weapon()
 
-pweapon = Weapon()
-
-pweapon.getWeapon("Longsword")
-pweapon.getWeapon("Dagger")
-print(pweapon.weapon['damage'])
+#pweapon.getWeapon("Longsword")
+#pweapon.getWeapon("Dagger")
+#print(pweapon.weapon['damage'])
