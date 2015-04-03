@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 *.pyc
+=======
+.idea/workspace.xml
+>>>>>>> origin/master
