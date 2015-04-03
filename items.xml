@@ -1,29 +1,29 @@
 <data>
     <items>
-        <primary name="Longsword" damage="5" delay="35" icon="../Graphics/Weapons/Longsword.png" range="25" velocity="0" knockback="2" armor="0" />
-        <primary name="Shord Sword" damage="4" delay="30" icon="../Graphics/Weapons/Shortsword.png" range="20" velocity="0" knockback="3" armor="0" />
-        <primary name="Dagger" damage="3" delay="24" icon="../Graphics/Weapons/Dagger.png" range="15" velocity="0" knockback="0" armor="0" />
+        <primary name="Longsword" damage="5" delay="35" icon="Assets/Graphics/Icons/Longsword.png" range="25" velocity="0" knockback="2" armor="0" />
+        <primary name="Shord Sword" damage="4" delay="30" icon="Assets/Graphics/Icons/Shortsword.png" range="20" velocity="0" knockback="3" armor="0" />
+        <primary name="Dagger" damage="3" delay="24" icon="Assets/Graphics/Icons/Dagger.png" range="15" velocity="0" knockback="0" armor="0" />
         
-        <twohand name="Halberd" damage="7" delay="46" icon="../Graphics/Weapons/Halberd.png" range="30" velocity="0" knockback="5" armor="0" />
+        <twohand name="Halberd" damage="7" delay="46" icon="Assets/Graphics/Icons/Halberd.png" range="30" velocity="0" knockback="5" armor="0" />
         
         <secondary name="Twohand" damage="0" delay="10" icon="" range="0" velocity="0" knockback="0" armor="0" />
-        <secondary name="Parrying Dagger" damage="2" delay="20" icon="../Graphics/Weapons/ParryingDagger.png" range="10" velocity="0" knockback="0" armor="10" />
-        <secondary name="Steel Shield" damage="0" delay="35" icon="../Graphics/Weapons/SteelShield.png" range="10" velocity="0" knockback="25" armor="35" />
+        <secondary name="Parrying Dagger" damage="2" delay="20" icon="Assets/Graphics/Icons/ParryingDagger.png" range="10" velocity="0" knockback="0" armor="10" />
+        <secondary name="Steel Shield" damage="0" delay="35" icon="Assets/Graphics/Icons/SteelShield.png" range="10" velocity="0" knockback="25" armor="35" />
 
-        <helmet name="Leather Helmet" armor="10" weight="4" type="medium" icon="../Graphics/Armor/LeatherHelmet.png" attribute="none" />
-        <helmet name="Umbral Helmet" armor="30" weight="4" type="heavy" icon="../Graphics/Weapons/UmbralHelmet.png" attribute="none" />
+        <helmet name="Leather Helmet" armor="10" weight="4" type="medium" icon="Assets/Graphics/Icons/LeatherHelmet.png" attribute="none" />
+        <helmet name="Umbral Helmet" armor="30" weight="4" type="heavy" icon="Assets/Graphics/Icons/UmbralHelmet.png" attribute="none" />
         
-        <chest name="Leather Jerkin" armor="10" weight="4" type="medium" icon="../Graphics/Armor/LeatherChest.png" attribute="none" />
-        <chest name="Umbral Chestplate" armor="30" weight="4" type="heavy" icon="../Graphics/Weapons/UmbralChest.png" attribute="none" />
+        <chest name="Leather Jerkin" armor="10" weight="4" type="medium" icon="Assets/Graphics/Icons/LeatherChest.png" attribute="none" />
+        <chest name="Umbral Chestplate" armor="30" weight="4" type="heavy" icon="Assets/Graphics/Icons/UmbralChest.png" attribute="none" />
         
-        <legs name="Leather Pantaloons" armor="10" weight="4" type="medium" icon="../Graphics/Armor/LeatherLegs.png" attribute="none" />
-        <legs name="Umbral Greaves" armor="30" weight="4" type="heavy" icon="../Graphics/Weapons/UmbralLegs.png" attribute="none" />
+        <legs name="Leather Pantaloons" armor="10" weight="4" type="medium" icon="Assets/Graphics/Icons/LeatherLegs.png" attribute="none" />
+        <legs name="Umbral Greaves" armor="30" weight="4" type="heavy" icon="Assets/Graphics/Icons/UmbralLegs.png" attribute="none" />
         
-        <foot name="Leather Boots" armor="10" weight="4" type="medium" icon="../Graphics/Armor/LeatherBoots.png" attribute="none" />
-        <foot name="Umbral Boots" armor="30" weight="4" type="heavy" icon="../Graphics/Weapons/UmbralBoots.png" attribute="none" />
+        <foot name="Leather Boots" armor="10" weight="4" type="medium" icon="Assets/Graphics/Icons/LeatherBoots.png" attribute="none" />
+        <foot name="Umbral Boots" armor="30" weight="4" type="heavy" icon="Assets/Graphics/Icons/UmbralBoots.png" attribute="none" />
         
-        <trinket name="Magic Wand" attribute="health" value="100" icon="../Graphics/Trinket/MagicWand.png" />
+        <trinket name="Magic Wand" attribute="health" value="100" icon="Assets/Graphics/Icons/MagicWand.png" />
         
-        <consumable name="Heal Potion" attribute="health" value="100" icon="../Graphics/Consumable/HealPotion.png" />
+        <consumable name="Heal Potion" attribute="health" value="100" icon="Assets/Graphics/Icons/HealPotion.png" />
     </items>
 </data>
