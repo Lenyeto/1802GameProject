@@ -29,15 +29,19 @@ LEFT = mymath.Vector2(-1, 0)
 
 
 class EntityBase(object):
-    def __init__(self, name, pos, velocity=mymath.Vector2(0, 0)):
+    def __init__(self, name, pos, velocity=mymath.Vector2(0, 0), physical=True):
         self.name = name
         self.pos = pos
         self.velocity = velocity
+        self.physical = physical
 
     def ai_player(self, player):
         pass
 
     def hit(self, x, k=mymath.Vector2(0, 0)):
+        pass
+
+    def update(self, dt):
         pass
 
 class Projectile(EntityBase):
@@ -51,12 +55,15 @@ class Projectile(EntityBase):
     def update(self, dt, entityList):
         self.pos += self.velocity * dt
         for e in entityList:
-            tmp = self.pos - e.pos
-            dist = tmp.Dot(tmp)
-            if dist < 16**2:
-                self.damage(e)
-                print(self.attack)
-                return True
+            if not isinstance(e, Wall_Floor):
+                pass
+            else:
+                tmp = self.pos - e.pos
+                dist = tmp.Dot(tmp)
+                if dist < 16**2:
+                    self.damage(e)
+                    print(self.attack)
+                    return True
         return False
 
     def damage(self, other):
@@ -222,9 +229,13 @@ class Player(EntityBase):
     def attemptMove(self, direction, list_of_entities, dt):
         new_position = self.pos + direction
         for e in list_of_entities:
-            tmp = new_position - e.pos
-            if tmp.Dot(tmp) < 40**2:
-                return False
+            if e.physical:
+                if isinstance(e, Wall_Floor):
+                    pass
+                else:
+                    tmp = new_position - e.pos
+                    if tmp.Dot(tmp) < 40**2:
+                        return False
         self.pos += direction * dt * self.speed
         return True
 
@@ -372,3 +383,13 @@ class Dummy(EntityBase):
         else:
             dir = (self.target.pos - self.pos).getNormalized()
             self.attemptMove(dir, players, dt)
+
+
+class Wall_Floor(EntityBase):
+    def __init__(self, name, pos, texture, physical=True):
+        EntityBase.__init__(self, name, pos, mymath.Vector2(0, 0), physical)
+        self.texture = pygame.transform.scale(pygame.image.load(texture), (32, 32))
+
+    def render(self, surface):
+        #surface.blit(self.texture, (self.pos.x - self.texture.get_width()/2, self.pos.y - self.texture.get_height()/2))
+        surface.blit(self.texture, (self.pos.x, self.pos.y))
