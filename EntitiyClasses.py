@@ -37,13 +37,16 @@ class EntityBase(object):
     def ai_player(self, player):
         pass
 
+    def hit(self, x, k=mymath.Vector2(0, 0)):
+        pass
+
 class Projectile(EntityBase):
-    def __init__(self, pos, velocity, height=1):
-        self.pos = pos
+    def __init__(self, pos, velocity, height=1, damage=1):
+        self.pos = pos.copy()
         self.velocity = velocity
         self.height = height
         self.isPiercing = False
-        self.attack = 5
+        self.attack = damage
 
     def update(self, dt, entityList):
         self.pos += self.velocity * dt
@@ -52,11 +55,12 @@ class Projectile(EntityBase):
             dist = tmp.Dot(tmp)
             if dist < 16**2:
                 self.damage(e)
+                print(self.attack)
                 return True
         return False
 
     def damage(self, other):
-        other.health -= self.attack
+        other.hit(self.attack)
 
     def render(self, surface):
         pygame.draw.circle(surface, (255, 0, 0), (int(self.pos.x), int(self.pos.y)), 5)
@@ -135,14 +139,13 @@ class particle(object):
 
     def update(self, dt):
         self.life -= dt
-        print(self.life)
         if self.life < 0:
             return True
         return False
 
     def render(self, surface):
         tmp = pygame.transform.rotate(self.image, self.rotation)
-        surface.blit(tmp, (self.pos.x - tmp.get_width(), self.pos.y - tmp.get_height()))
+        #surface.blit(tmp, (self.pos.x - tmp.get_width()/2, self.pos.y - tmp.get_height()/2))
 
 
 class Player(EntityBase):
@@ -241,12 +244,11 @@ class Player(EntityBase):
                 for i in list_of_entities:
                     tmp = i.pos - self.pos
                     tmp = tmp.Dot(tmp)
-                    if tmp < int(self.equipment[EQUIP_WEAPON].weapon['range']) ** 2:
-                        i.hit(5, self.direction * 20)
+                    if tmp < int(self.equipment[EQUIP_WEAPON].weapon['range'])** 2:
+                        i.hit(self.equipment[EQUIP_WEAPON].weapon['damage'], self.direction * 20)
                 self.particles.append(particle(self.pos + self.direction * 10, swipe, 500, self.direction))
             elif self.equipment[EQUIP_WEAPON].weapon['wtype'] == "Ranged":
-                #self.sub_entities.append(TestProj(self.pos.copy(), self.direction.copy()))
-                self.sub_entities.append(Projectile(self.pos, self.direction*self.equipment[EQUIP_WEAPON].weapon['velocity']))
+                self.sub_entities.append(Projectile(self.pos, self.direction*self.equipment[EQUIP_WEAPON].weapon['velocity'], 1, self.equipment[EQUIP_WEAPON].weapon['damage']))
             elif self.equipment[EQUIP_WEAPON].weapon['wtype'] == "Spell":
                 pass
 
@@ -272,14 +274,14 @@ class ItemStand(EntityBase):
 
     def pick_up(self, player):
 
-        self.cool_down = 10
+        self.cool_down = 1000
 
     def update(self, dt, players=[]):
         if self.cool_down == 0:
             for p in players:
                 dist_vect = p.pos - self.pos
                 dist = dist_vect.Dot(dist_vect)
-                if dist < 20**2:
+                if dist < 50**2:
                     self.pick_up(p)
         else:
             self.cool_down -= dt
@@ -287,9 +289,9 @@ class ItemStand(EntityBase):
                 self.cool_down = 0
 
     def render(self, surface):
-        pygame.draw.rect(surface, (125, 125, 125), (self.pos.x-20, self.pos.y+20, 40, 20))
+        pygame.draw.rect(surface, (125, 125, 125), (int(self.pos.x-20), int(self.pos.y+20), 40, 20))
         if not self.item == -1:
-            pygame.draw.circle(surface, (225, 225, 225), (self.pos.x, self.pos.y), 15)
+            pygame.draw.circle(surface, (self.cool_down/1000 * 255, 225, 225), (int(self.pos.x), int(self.pos.y)), 15)
 
 
 class WeaponStand(ItemStand):
@@ -305,7 +307,7 @@ class WeaponStand(ItemStand):
         else:
             player.equipment[EQUIP_WEAPON] = self.item
             self.item = -1
-        self.cool_down = 10
+        self.cool_down = 1000
 
 
 
@@ -315,11 +317,22 @@ class Dummy(EntityBase):
         self.health = 100
         self.invincible = 0
         self.show_health = 0
+        self.speed = 0.01
+        self.target = None
 
     def hit(self, damage, knockback=mymath.Vector2(0, 0)):
         self.health -= damage
         self.pos += knockback
         self.show_health = 10
+
+    def attemptMove(self, direction, players, dt):
+        new_position = self.pos + direction
+        for e in players:
+            tmp = new_position - e.pos
+            if tmp.Dot(tmp) < 40**2:
+                return False
+        self.pos += direction * dt * self.speed
+        return True
 
     def update(self, dt):
         if self.invincible > 0:
@@ -342,3 +355,20 @@ class Dummy(EntityBase):
         tmpX = 40
         tmpX *= self.health / 100
         pygame.draw.rect(surface, (125, 125, 125), (int(self.pos.x) - tmpX/2, int(self.pos.y - 10) - 20, tmpX, 5))
+
+    def AI(self, players, dt):
+        if self.target == None:
+            if len(players) > 1:
+                distList = []
+                distList2 = players.copy()
+                for p in players:
+                    tmp = self.pos - p.pos
+                    dist = tmp.Dot(tmp)
+                    distList.append(dist)
+                distList.sort()
+                distList2.index(distList[0])
+            else:
+                self.target = players[0]
+        else:
+            dir = (self.target.pos - self.pos).getNormalized()
+            self.attemptMove(dir, players, dt)

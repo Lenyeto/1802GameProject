@@ -23,7 +23,7 @@ class Weapon(object):
                 self.weapon['velocity'] = int(s.attributes['velocity'].value)
                 self.weapon['wtype'] = str(s.attributes['wtype'].value)
 
-        return self.weapon
+        return self
 
 #pweapon = Weapon()
 

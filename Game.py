@@ -2,6 +2,7 @@ import pygame
 import MapSystem
 import EntitiyClasses
 import mymath
+import xmlweapons
 
 pygame.init()
 
@@ -13,8 +14,9 @@ clock = pygame.time.Clock()
 
 list_of_keys = []
 
-list_of_entities= [EntitiyClasses.Dummy(mymath.Vector2(200, 200)), EntitiyClasses.Dummy(mymath.Vector2(500, 500))]
-Player = EntitiyClasses.Player(mymath.Vector2(100, 100), 100, True)
+list_of_entities= [EntitiyClasses.Dummy(mymath.Vector2(200, 200)), EntitiyClasses.Dummy(mymath.Vector2(500, 500)), EntitiyClasses.WeaponStand(xmlweapons.Weapon().getWeapon("Short Bow"), mymath.Vector2(50, 50))]
+Players = []
+Players.append(EntitiyClasses.Player(mymath.Vector2(100, 100), 100, True))
 
 done = False
 while not done:
@@ -30,14 +32,22 @@ while not done:
             list_of_keys.remove(evt.key)
 
     for i in list_of_entities:
-        if i.update(dtime):
-            list_of_entities.remove(i)
+        if isinstance(i, EntitiyClasses.WeaponStand):
+            i.update(dtime, Players)
+        else:
+            if i.update(dtime):
+                list_of_entities.remove(i)
+    for i in list_of_entities:
+        if isinstance(i, EntitiyClasses.Dummy):
+            i.AI(Players, dtime)
 
-    Player.update(dtime, list_of_keys, list_of_entities)
+    for i in Players:
+        i.update(dtime, list_of_keys, list_of_entities)
 
 
     window.fill((0, 0, 0))
-    Player.render(window)
+    for i in Players:
+        i.render(window)
     for i in list_of_entities:
         i.render(window)
     pygame.display.flip()
