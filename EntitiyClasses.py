@@ -29,11 +29,12 @@ LEFT = mymath.Vector2(-1, 0)
 
 
 class EntityBase(object):
-    def __init__(self, name, pos, velocity=mymath.Vector2(0, 0), physical=True):
+    def __init__(self, name, pos, velocity=mymath.Vector2(0, 0), physical=True, background=False):
         self.name = name
         self.pos = pos
         self.velocity = velocity
         self.physical = physical
+        self.background = background
 
     def ai_player(self, player):
         pass
@@ -231,7 +232,9 @@ class Player(EntityBase):
         for e in list_of_entities:
             if e.physical:
                 if isinstance(e, Wall_Floor):
-                    pass
+                    tmp = new_position - e.pos
+                    if tmp.Dot(tmp) < 20**2:
+                        return False
                 else:
                     tmp = new_position - e.pos
                     if tmp.Dot(tmp) < 40**2:
@@ -386,10 +389,9 @@ class Dummy(EntityBase):
 
 
 class Wall_Floor(EntityBase):
-    def __init__(self, name, pos, texture, physical=True):
-        EntityBase.__init__(self, name, pos, mymath.Vector2(0, 0), physical)
+    def __init__(self, name, pos, texture, physical=True, background=True):
+        EntityBase.__init__(self, name, pos, mymath.Vector2(0, 0), physical, background)
         self.texture = pygame.transform.scale(pygame.image.load(texture), (32, 32))
 
     def render(self, surface):
-        #surface.blit(self.texture, (self.pos.x - self.texture.get_width()/2, self.pos.y - self.texture.get_height()/2))
         surface.blit(self.texture, (self.pos.x, self.pos.y))
