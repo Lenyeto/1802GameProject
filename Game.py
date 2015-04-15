@@ -21,6 +21,8 @@ Players.append(EntitiyClasses.Player(mymath.Vector2(100, 100), 100, True))
 room_size = (640, 640)
 roomSurface = pygame.Surface((640, 640))
 
+hudSurface = pygame.Surface((640, 160))
+
 TestRoom = MapSystem.Room("TYPE")
 TestRoom.generate_room(roomSurface)
 
@@ -59,5 +61,6 @@ while not done:
     for i in Players:
         i.render(roomSurface)
     window.blit(roomSurface, (0, 0))
+    window.blit(hudSurface, (0, 640))
     pygame.display.flip()
 pygame.quit()

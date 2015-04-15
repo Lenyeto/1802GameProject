@@ -56,14 +56,17 @@ class Projectile(EntityBase):
     def update(self, dt, entityList):
         self.pos += self.velocity * dt
         for e in entityList:
-            if not isinstance(e, Wall_Floor):
-                pass
+            if isinstance(e, Wall_Floor):
+                if e.physical:
+                    tmp = self.pos - e.pos
+                    dist = tmp.Dot(tmp)
+                    if dist < 16 ** 2:
+                        return True
             else:
                 tmp = self.pos - e.pos
                 dist = tmp.Dot(tmp)
                 if dist < 16**2:
                     self.damage(e)
-                    print(self.attack)
                     return True
         return False
 
@@ -162,6 +165,8 @@ class Player(EntityBase):
         self.name = "Hero"
         self.health = health
         self.speed = 0.4
+
+
         self.equipment = [-1, -1, -1, -1, -1, -1, [], []]
         self.direction = DOWN
         self.invincibility_period = 0
@@ -170,15 +175,27 @@ class Player(EntityBase):
         self.sub_entities = []
         self.particles = []
 
+
         self.tmp_key_list = []
 
         #if debug:
         self.equipment[EQUIP_WEAPON] = Weapon()
         self.equipment[EQUIP_WEAPON].getWeapon("Longsword")
-        print(self.equipment[EQUIP_WEAPON])
 
 
     def update(self, dt, list_of_keys, list_of_entities):
+        equip_weight_sum = 0
+        for i in self.equipment:
+            if not i == -1 and not isinstance(i, list):
+                equip_weight_sum += i.weight / 10
+        self.speed = 0.4 - equip_weight_sum
+        if self.speed < 0.05:
+            self.speed = 0.05
+
+
+
+
+
         if self.cur_delay > 0:
             self.cur_delay -= dt
         if self.cur_delay < 0:
@@ -233,11 +250,18 @@ class Player(EntityBase):
             if e.physical:
                 if isinstance(e, Wall_Floor):
                     tmp = new_position - e.pos
-                    if tmp.Dot(tmp) < 20**2:
+                    newDist = tmp.Dot(tmp)
+                    tmp2 = self.pos - e.pos
+                    oldDist = tmp2.Dot(tmp2)
+                    if newDist < 20**2 and newDist < oldDist:
                         return False
                 else:
                     tmp = new_position - e.pos
-                    if tmp.Dot(tmp) < 40**2:
+                    newDist = tmp.Dot(tmp)
+                    tmp2 = self.pos - e.pos
+                    oldDist = tmp2.Dot(tmp2)
+
+                    if newDist < 40**2 and newDist < oldDist:
                         return False
         self.pos += direction * dt * self.speed
         return True
@@ -327,7 +351,7 @@ class WeaponStand(ItemStand):
 
 class Dummy(EntityBase):
     def __init__(self, pos):
-        EntityBase.__init__(self, "DUMMY", pos)
+        EntityBase.__init__(self, "ENEMY", pos)
         self.health = 100
         self.invincible = 0
         self.show_health = 0

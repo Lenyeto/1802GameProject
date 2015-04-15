@@ -12,12 +12,20 @@ DEBUG = -1
 
 
 class Floor(object):
-    pass
+    def __init__(self):
+        self.rooms = []
+        self.type = DEBUG
+        self.num_rooms = random.randint(6, 16)
+
+
+    def generate_floor(self):
+        self.rooms.append(Room(self.type))
 
 
 class Room(object):
     def __init__(self, type, piece="NONE"):
         self.entities = []
+        self.can_leave = False
 
     def generate_room(self, surface, type=DEBUG):
         self.create_walls(surface, type)
@@ -55,3 +63,22 @@ class Room(object):
     def render(self, surface):
         for e in self.entities:
             e.render(surface)
+
+    def update(self, list_of_players, list_of_entities):
+        if not self.can_leave:
+            num_of_enemies = 0
+            for i in list_of_entities:
+                if i.name == "ENEMY":
+                    num_of_enemies += 1
+            if num_of_enemies > 0:
+                self.can_leave = False
+        else:
+            for i in list_of_players:
+                if i.pos.x < 16:
+                    return((-1, 0))
+                if i.pos.x > 624:
+                    return((1, 0))
+                if i.pos.y < 16:
+                    return((0, -1))
+                if i.pos.y > 624:
+                    return((0, 1))
