@@ -347,6 +347,11 @@ class WeaponStand(ItemStand):
             self.item = -1
         self.cool_down = 1000
 
+    def render(self, surface):
+        pygame.draw.rect(surface, (self.cool_down/1000 * 255, 225, 225), (int(self.pos.x-20), int(self.pos.y + 20), 40, 20))
+        tmpImage = pygame.image.load(self.item.weapon['graphic'])
+        surface.blit(tmpImage, (int(self.pos.x - tmpImage.get_width()/2), int(self.pos.y - tmpImage.get_height()/2)))
+
 
 
 class Dummy(EntityBase):

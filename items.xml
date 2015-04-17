@@ -1,9 +1,9 @@
 <data>
     <items>
-        <item name="Longsword" damage="40" delay="35" graphic="../Graphics/Weapons/Longsword.png" range="64" velocity="0" knockback="2" type="Weapon" wtype="Melee"></item>
-        <item name="Shord Sword" damage="4" delay="30" graphic="../Graphics/Weapons/Shortsword.png" range="20" velocity="0" knockback="3" type="Weapon" wtype="Melee"></item>
-        <item name="Dagger" damage="3" delay="24" graphic="../Graphics/Weapons/Dagger.png" range="15" velocity="0" knockback="0" type="Weapon" wtype="Melee"></item>
-        <item name="Halberd" damage="7" delay="46" graphic="../Graphics/Weapons/Halberd.png" range="30" velocity="0" knockback="5" type="Weapon" wtype="Melee"></item>
-        <item name="Short Bow" damage="100" delay="20" graphic="../Graphics/Weapons/ShortBow.png" range="100" velocity="2" knockback="2" type="Weapon" wtype="Ranged"></item>
+        <item name="Longsword" damage="40" delay="35" graphic="Assets/Graphics/Weapons/Longsword.png" range="64" velocity="0" knockback="2" type="Weapon" wtype="Melee"></item>
+        <item name="Short Sword" damage="4" delay="30" graphic="Assets/Graphics/Weapons/Shortsword.png" range="20" velocity="0" knockback="3" type="Weapon" wtype="Melee"></item>
+        <item name="Dagger" damage="3" delay="24" graphic="Assets/Graphics/Weapons/Dagger.png" range="15" velocity="0" knockback="0" type="Weapon" wtype="Melee"></item>
+        <item name="Halberd" damage="7" delay="46" graphic="Assets/Graphics/Weapons/Halberd.png" range="30" velocity="0" knockback="5" type="Weapon" wtype="Melee"></item>
+        <item name="Short Bow" damage="100" delay="20" graphic="Assets/Graphics/Weapons/ShortBow.png" range="100" velocity="2" knockback="2" type="Weapon" wtype="Ranged"></item>
     </items>
 </data>
