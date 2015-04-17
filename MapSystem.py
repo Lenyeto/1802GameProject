@@ -12,20 +12,72 @@ DEBUG = -1
 
 
 class Floor(object):
-    def __init__(self):
+    def __init__(self, surface, type=DEBUG):
         self.rooms = []
-        self.type = DEBUG
+        self.type = type
         self.num_rooms = random.randint(6, 16)
+        self.generate_floor()
+        self.cur_room = self.rooms[0]
+        self.cur_room.generate_room(surface)
+        self.create_doors()
 
 
     def generate_floor(self):
-        self.rooms.append(Room(self.type))
+        self.rooms.append(Room(self.type, Vector2(0, 0)))
+        for i in range(self.num_rooms):
+            cur_room = self.rooms[-1]
+            ಠ_ಠ = random.randint(0, 3)
+            if len(self.rooms) < self.num_rooms:# - 3:
+                if ಠ_ಠ == 0:
+                    if not self.check_if_full(Vector2(cur_room.position.x + 1, cur_room.position.y)):
+                        self.rooms.append(Room(self.type, Vector2(cur_room.position.x + 1, cur_room.position.y)))
+                elif ಠ_ಠ == 1:
+                    if not self.check_if_full(Vector2(cur_room.position.x, cur_room.position.y + 1)):
+                        self.rooms.append(Room(self.type, Vector2(cur_room.position.x, cur_room.position.y + 1)))
+                elif ಠ_ಠ == 2:
+                    if not self.check_if_full(Vector2(cur_room.position.x - 1, cur_room.position.y)):
+                        self.rooms.append(Room(self.type, Vector2(cur_room.position.x - 1, cur_room.position.y)))
+                else:
+                    if not self.check_if_full(Vector2(cur_room.position.x, cur_room.position.y - 1)):
+                        self.rooms.append(Room(self.type, Vector2(cur_room.position.x, cur_room.position.y - 1)))
+            #elif len(self.rooms) < self.num_rooms - 1:
+            #    # Creates Item Rooms
+            #    pass
+            #elif len(self.rooms) < self.num_rooms:
+            #    # Creates Boss Room
+            #    pass
 
+    def update(self, list_of_players, surface):
+        move = self.cur_room.update(list_of_players)
+        if not move == Vector2(0, 0):
+            bool, room = self.check_if_full(self.cur_room.position + move)
+            if bool:
+                self.cur_room = room
+                self.cur_room.generate_room(surface)
+
+    def create_doors(self):
+        for i in self.rooms:
+            if self.check_if_full(Vector2(i.position.x + 1, i.position.y)):
+                i.doors[0] = True
+            if self.check_if_full(Vector2(i.position.x, i.position.y + 1)):
+                i.doors[1] = True
+            if self.check_if_full(Vector2(i.position.x - 1, i.position.y)):
+                i.doors[2] = True
+            if self.check_if_full(Vector2(i.position.x, i.position.y - 1)):
+                i.doors[3] = True
+
+    def check_if_full(self, pos=Vector2(0, 0)):
+        for i in self.rooms:
+            if i.position == pos:
+                return True, i
+        return False, NONE
 
 class Room(object):
-    def __init__(self, type, piece="NONE"):
+    def __init__(self, type, position=Vector2(0, 0)):
         self.entities = []
         self.can_leave = False
+        self.position = position
+        self.doors = [False, False, False, False]
 
     def generate_room(self, surface, type=DEBUG):
         self.create_walls(surface, type)
@@ -64,21 +116,25 @@ class Room(object):
         for e in self.entities:
             e.render(surface)
 
-    def update(self, list_of_players, list_of_entities):
+    def update(self, list_of_players):
         if not self.can_leave:
             num_of_enemies = 0
-            for i in list_of_entities:
+            for i in self.entities:
                 if i.name == "ENEMY":
                     num_of_enemies += 1
             if num_of_enemies > 0:
                 self.can_leave = False
+            else:
+                self.can_leave = True
         else:
             for i in list_of_players:
-                if i.pos.x < 16:
-                    return((-1, 0))
-                if i.pos.x > 624:
-                    return((1, 0))
-                if i.pos.y < 16:
-                    return((0, -1))
-                if i.pos.y > 624:
-                    return((0, 1))
+                if i.pos.x < 32 and self.doors[2]:
+                    return Vector2(-1, 0)
+                if i.pos.x > 608 and self.doors[0]:
+                    return Vector2(1, 0)
+                if i.pos.y < 32 and self.doors[1]:
+                    return Vector2(0, -1)
+                if i.pos.y > 608 and self.doors[3]:
+                    return Vector2(0, 1)
+            return Vector2(0, 0)
+        return Vector2(0, 0)

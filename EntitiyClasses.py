@@ -184,13 +184,13 @@ class Player(EntityBase):
 
 
     def update(self, dt, list_of_keys, list_of_entities):
-        equip_weight_sum = 0
-        for i in self.equipment:
-            if not i == -1 and not isinstance(i, list):
-                equip_weight_sum += i.weight / 10
-        self.speed = 0.4 - equip_weight_sum
-        if self.speed < 0.05:
-            self.speed = 0.05
+        #equip_weight_sum = 0
+        #for i in self.equipment:
+        #    if not i == -1 and not isinstance(i, list):
+        #        equip_weight_sum += i.weight / 10
+        #self.speed = 0.4 - equip_weight_sum
+        #if self.speed < 0.05:
+        #    self.speed = 0.05
 
 
 

@@ -23,8 +23,12 @@ roomSurface = pygame.Surface((640, 640))
 
 hudSurface = pygame.Surface((640, 160))
 
-TestRoom = MapSystem.Room("TYPE")
-TestRoom.generate_room(roomSurface)
+
+
+#TestRoom = MapSystem.Room("TYPE")
+#TestRoom.generate_room(roomSurface)
+
+Floor = MapSystem.Floor(roomSurface)
 
 
 done = False
@@ -40,24 +44,26 @@ while not done:
         elif evt.type == pygame.KEYUP:
             list_of_keys.remove(evt.key)
 
-    for i in TestRoom.entities:
+    Floor.update(Players, roomSurface)
+
+    for i in Floor.cur_room.entities:
         if isinstance(i, EntitiyClasses.WeaponStand):
             i.update(dtime, Players)
         else:
             if i.update(dtime):
-                TestRoom.entities.remove(i)
-    for i in TestRoom.entities:
+                Floor.cur_room.entities.remove(i)
+    for i in Floor.cur_room.entities:
         if isinstance(i, EntitiyClasses.Dummy):
             i.AI(Players, dtime)
 
 
 
     for i in Players:
-        i.update(dtime, list_of_keys, TestRoom.entities)
+        i.update(dtime, list_of_keys, Floor.cur_room.entities)
 
 
     roomSurface.fill((0, 0, 0))
-    TestRoom.render(roomSurface)
+    Floor.cur_room.render(roomSurface)
     for i in Players:
         i.render(roomSurface)
     window.blit(roomSurface, (0, 0))
