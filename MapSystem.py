@@ -103,6 +103,7 @@ class Room(object):
         self.position = position
         self.doors = [False, False, False, False]
         self.door_pos = [Vector2(0, 0), Vector2(0, 0), Vector2(0,0), Vector2(0, 0)]
+        self.empty = False
 
     def generate_room(self, surface, type=DEBUG):
         self.create_walls(surface, type)
