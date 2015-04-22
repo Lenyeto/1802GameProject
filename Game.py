@@ -1,19 +1,31 @@
 import pygame
-import EntitiyClasses
 import MapSystem
+import EntitiyClasses
 import mymath
+import equipment
 
 pygame.init()
 
-resolution = (1200, 800)
+resolution = (640, 800)
+
 
 window = pygame.display.set_mode(resolution)
 clock = pygame.time.Clock()
 
 list_of_keys = []
 
-list_of_entities= [EntitiyClasses.Dummy(mymath.Vector2(200, 200)), EntitiyClasses.Dummy(mymath.Vector2(500, 500))]
-Player = EntitiyClasses.Player(mymath.Vector2(100, 100), 100, True)
+Players = []
+Players.append(EntitiyClasses.Player(mymath.Vector2(100, 100), 100, True))
+
+room_size = (640, 640)
+roomSurface = pygame.Surface((640, 640))
+
+hudSurface = pygame.Surface((640, 160))
+
+
+
+Floor = MapSystem.Floor(roomSurface)
+
 
 done = False
 while not done:
@@ -28,16 +40,29 @@ while not done:
         elif evt.type == pygame.KEYUP:
             list_of_keys.remove(evt.key)
 
-    for i in list_of_entities:
-        if i.update(dtime):
-            list_of_entities.remove(i)
+    Floor.update(Players, roomSurface)
 
-    Player.update(dtime, list_of_keys, list_of_entities)
+    for i in Floor.cur_room.entities:
+        if isinstance(i, EntitiyClasses.WeaponStand):
+            i.update(dtime, Players)
+        else:
+            if i.update(dtime):
+                Floor.cur_room.entities.remove(i)
+    for i in Floor.cur_room.entities:
+        if isinstance(i, EntitiyClasses.Dummy):
+            i.AI(Players, dtime)
 
 
-    window.fill((0, 0, 0))
-    Player.render(window)
-    for i in list_of_entities:
-        i.render(window)
+
+    for i in Players:
+        i.update(dtime, list_of_keys, Floor.cur_room.entities)
+
+
+    roomSurface.fill((0, 0, 0))
+    Floor.cur_room.render(roomSurface)
+    for i in Players:
+        i.render(roomSurface)
+    window.blit(roomSurface, (0, 0))
+    window.blit(hudSurface, (0, 640))
     pygame.display.flip()
 pygame.quit()

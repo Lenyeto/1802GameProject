@@ -3,6 +3,7 @@
         <primary name="Longsword" damage="5" delay="35" icon="Assets/Graphics/Icons/Longsword.png" range="25" velocity="0" knockback="2" armor="0" />
         <primary name="Shord Sword" damage="4" delay="30" icon="Assets/Graphics/Icons/Shortsword.png" range="20" velocity="0" knockback="3" armor="0" />
         <primary name="Dagger" damage="3" delay="24" icon="Assets/Graphics/Icons/Dagger.png" range="15" velocity="0" knockback="0" armor="0" />
+	    <primary name="Short Bow" damage="100" delay="30" icon="Assets/Graphics/Weapons/ShortBow.png" range="45" velocity="2" knockback="0" armor="0" />
         
         <twohand name="Halberd" damage="7" delay="46" icon="Assets/Graphics/Icons/Halberd.png" range="30" velocity="0" knockback="5" armor="0" />
         

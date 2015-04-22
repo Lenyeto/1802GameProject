@@ -13,10 +13,6 @@ class Equipment(object):
         self.trinket = {}
         self.consume = {}
 
-##    def __str__(self):
-##        returnval = str(self.weapon['name']) + str(self.weapon['damage']) + str(self.weapon['delay']) + str(self.weapon['knockback']) + str(self.weapon['icon']) + str(self.weapon['type']) + str(self.weapon['range']) + str(self.weapon['velocity'])
-##        return returnval
-
     def equipPrimary(self, itemname):
         xmldoc = minidom.parse('items.xml')
         itemlist = xmldoc.getElementsByTagName('primary')
@@ -33,7 +29,7 @@ class Equipment(object):
                 returnval = self.primary
             else:
                 returnval = None
-        return self.primary
+        return self
 
     def equipSecondary(self, itemname):
         xmldoc = minidom.parse('items.xml')
@@ -51,7 +47,7 @@ class Equipment(object):
                 returnval = self.secondary
             else:
                 returnval = None
-        return self.secondary
+        return self
 
     def equipTwohand(self, itemname):
         xmldoc = minidom.parse('items.xml')
@@ -70,7 +66,7 @@ class Equipment(object):
                 returnval = self.primary
             else:
                 returnval = None
-        return self.primary
+        return self
 
     def equipHelmet(self, itemname):
         xmldoc = minidom.parse('items.xml')
@@ -86,7 +82,7 @@ class Equipment(object):
                 returnval = self.helmet
             else:
                 returnval = None
-        return self.helmet
+        return self
 
     def equipChest(self, itemname):
         xmldoc = minidom.parse('items.xml')
@@ -102,7 +98,7 @@ class Equipment(object):
                 returnval = self.chest
             else:
                 returnval = None
-        return self.chest
+        return self
 
     def equipLegs(self, itemname):
         xmldoc = minidom.parse('items.xml')
@@ -118,7 +114,7 @@ class Equipment(object):
                 returnval = self.legs
             else:
                 returnval = None
-        return self.legs
+        return self
 
     def equipFoot(self, itemname):
         xmldoc = minidom.parse('items.xml')
@@ -134,7 +130,7 @@ class Equipment(object):
                 returnval = self.foot
             else:
                 returnval = None
-        return self.foot
+        return self
 
     def equipTrinket(self, itemname):
         xmldoc = minidom.parse('items.xml')
@@ -148,21 +144,21 @@ class Equipment(object):
                 returnval = self.trinket
             else:
                 returnval = None
-        return self.trinket
+        return self
 
     def equipConsumable(self, itemname):
         xmldoc = minidom.parse('items.xml')
         itemlist = xmldoc.getElementsByTagName('consumable')
         for s in itemlist:
             if (s.attributes['name'].value == itemname):
-                self.consumable['name'] = str(s.attributes['name'].value)
-                self.consumable['attribute'] = str(s.attributes['attribute'].value)
-                self.consumable['value'] = int(s.attributes['value'].value)
-                self.consumable['icon'] = str(s.attributes['icon'].value)
-                returnval = self.consumable
+                self.consume['name'] = str(s.attributes['name'].value)
+                self.consume['attribute'] = str(s.attributes['attribute'].value)
+                self.consume['value'] = int(s.attributes['value'].value)
+                self.consume['icon'] = str(s.attributes['icon'].value)
+                returnval = self.consume
             else:
                 returnval = None
-        return self.consumable
+        return self
 
 
 gear = Equipment()
@@ -175,5 +171,3 @@ gear.equipFoot("Leather Boots")
 gear.equipHelmet("Leather Helmet")
 gear.equipTrinket("Magic Wand")
 gear.equipConsumable("Heal Potion")
-
-print(gear.primary['damage'])

@@ -3,7 +3,7 @@ import xml.etree.ElementTree as ET
 import pygame
 import math
 import random
-from xmlweapons import *
+from equipment import *
 from UtilFuncs import *
 
 ITEM_CONSUMABLE = 0
@@ -179,8 +179,8 @@ class Player(EntityBase):
         self.tmp_key_list = []
 
         #if debug:
-        self.equipment[EQUIP_WEAPON] = Weapon()
-        self.equipment[EQUIP_WEAPON].getWeapon("Longsword")
+        self.equipment[EQUIP_WEAPON] = Equipment()
+        self.equipment[EQUIP_WEAPON].equipPrimary("Longsword")
 
 
     def update(self, dt, list_of_keys, list_of_entities):
@@ -276,18 +276,18 @@ class Player(EntityBase):
 
 
     def attack(self, list_of_entities):
-        if isinstance(self.equipment[EQUIP_WEAPON], Weapon):
+        if isinstance(self.equipment[EQUIP_WEAPON], Equipment):
             self.cur_delay = self.attack_delay
-            if self.equipment[EQUIP_WEAPON].weapon['wtype'] == 'Melee':
+            if self.equipment[EQUIP_WEAPON].primary['velocity'] == 0:
                 for i in list_of_entities:
                     tmp = i.pos - self.pos
                     tmp = tmp.Dot(tmp)
-                    if tmp < int(self.equipment[EQUIP_WEAPON].weapon['range'])** 2:
-                        i.hit(self.equipment[EQUIP_WEAPON].weapon['damage'], self.direction * 20)
-                self.particles.append(particle(self.pos + self.direction * 10, swipe, 500, self.direction))
-            elif self.equipment[EQUIP_WEAPON].weapon['wtype'] == "Ranged":
-                self.sub_entities.append(Projectile(self.pos, self.direction*self.equipment[EQUIP_WEAPON].weapon['velocity'], 1, self.equipment[EQUIP_WEAPON].weapon['damage']))
-            elif self.equipment[EQUIP_WEAPON].weapon['wtype'] == "Spell":
+                    if tmp < int(self.equipment[EQUIP_WEAPON].primary['range'])** 2:
+                        i.hit(self.equipment[EQUIP_WEAPON].primary['damage'], self.direction * 20)
+                #self.particles.append(particle(self.pos + self.direction * 10, 500, self.direction))
+            elif self.equipment[EQUIP_WEAPON].primary['velocity'] > 0:
+                self.sub_entities.append(Projectile(self.pos, self.direction*self.equipment[EQUIP_WEAPON].primary['velocity'], 1, self.equipment[EQUIP_WEAPON].primary['damage']))
+            elif self.equipment[EQUIP_WEAPON].primary['velocity'] < 0:
                 pass
 
     def hit(self, damage):
@@ -337,7 +337,7 @@ class WeaponStand(ItemStand):
         ItemStand.__init__(self, weapon, pos)
 
     def pick_up(self, player):
-        if isinstance(player.equipment[EQUIP_WEAPON], Weapon):
+        if isinstance(player.equipment[EQUIP_WEAPON], Equipment):
             if not self.item == -1:
                 tmp = self.item
                 self.item = player.equipment[EQUIP_WEAPON]
@@ -349,7 +349,7 @@ class WeaponStand(ItemStand):
 
     def render(self, surface):
         pygame.draw.rect(surface, (self.cool_down/1000 * 255, 225, 225), (int(self.pos.x-20), int(self.pos.y + 20), 40, 20))
-        tmpImage = pygame.image.load(self.item.weapon['graphic'])
+        tmpImage = pygame.image.load(self.item.primary['icon'])
         surface.blit(tmpImage, (int(self.pos.x - tmpImage.get_width()/2), int(self.pos.y - tmpImage.get_height()/2)))
 
 

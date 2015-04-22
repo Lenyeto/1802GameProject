@@ -2,7 +2,7 @@ import random
 import pygame
 from mymath import *
 from EntitiyClasses import *
-import xmlweapons
+import equipment
 
 
 
@@ -25,7 +25,6 @@ class Floor(object):
 
     def generate_floor(self):
         self.rooms.append(Room(self.type, Vector2(0, 0)))
-        #for i in range(self.num_rooms):
         i = 0
         while i < self.num_rooms:
             cur_room = self.rooms[-1]
@@ -152,7 +151,7 @@ class Room(object):
 
     def generate_entities(self, surface, type):
         self.entities.append(Dummy(mymath.Vector2(200, 200)))
-        self.entities.append(WeaponStand(xmlweapons.Weapon().getWeapon("Short Bow"), mymath.Vector2(50, 50)))
+        self.entities.append(WeaponStand(equipment.Equipment().equipPrimary("Short Bow"), mymath.Vector2(50, 50)))
 
     def render(self, surface):
         for e in self.entities:
