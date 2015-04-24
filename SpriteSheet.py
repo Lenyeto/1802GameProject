@@ -1,9 +1,7 @@
-import pygame
 from EntitiyClasses import *
 from mymath import *
 import math
-
-IDLE = Vector2(0, 0)
+import pygame
 
 
 class Imgload(object):
@@ -114,9 +112,10 @@ if __name__ == "__main__":  # Testing
         # update
 
         player.update(dtime, keys, [])
-        win.fill((0, 0, 0))
-        #render
 
+        # render
+        
+        win.fill((0, 0, 0))
         player.render(win)
 
         pygame.display.flip()
