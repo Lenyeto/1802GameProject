@@ -1,6 +1,6 @@
 import pygame
 import MapSystem
-import EntitiyClasses
+from EntityClasses import *
 import mymath
 import equipment
 
@@ -15,7 +15,7 @@ clock = pygame.time.Clock()
 list_of_keys = []
 
 Players = []
-Players.append(EntitiyClasses.Player(mymath.Vector2(100, 100), 100, True))
+Players.append(Player(mymath.Vector2(100, 100), 100, True))
 
 room_size = (640, 640)
 roomSurface = pygame.Surface((640, 640))
@@ -43,13 +43,13 @@ while not done:
     Floor.update(Players, roomSurface)
 
     for i in Floor.cur_room.entities:
-        if isinstance(i, EntitiyClasses.WeaponStand):
+        if isinstance(i, WeaponStand):
             i.update(dtime, Players)
         else:
             if i.update(dtime):
                 Floor.cur_room.entities.remove(i)
     for i in Floor.cur_room.entities:
-        if isinstance(i, EntitiyClasses.Dummy):
+        if isinstance(i, Dummy):
             i.AI(Players, dtime)
 
 

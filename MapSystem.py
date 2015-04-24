@@ -1,7 +1,7 @@
 import random
 import pygame
 from mymath import *
-from EntitiyClasses import *
+from EntityClasses import *
 import equipment
 
 
