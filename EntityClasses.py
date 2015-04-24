@@ -5,6 +5,7 @@ import math
 import random
 from equipment import *
 from UtilFuncs import *
+from SpriteSheet import *
 
 ITEM_CONSUMABLE = 0
 ITEM_EQUIPABLE = 1
@@ -169,14 +170,14 @@ class Player(EntityBase):
 
 
         self.equipment = [-1, -1, -1, -1, -1, -1, [], []]
-        self.direction = DOWN
+        self.direction = IDLE
         self.invincibility_period = 0
         self.attack_delay = 1000
         self.cur_delay = 0
         self.sub_entities = []
         self.particles = []
 
-
+        self.anim = Animate(self, Imgload().getlist())
 
         self.tmp_key_list = []
 
@@ -213,6 +214,19 @@ class Player(EntityBase):
             if i.update(dt):
                 self.particles.remove(i)
 
+        if pygame.K_w in list_of_keys:
+            self.direction = UP
+            self.attemptMove(UP, list_of_entities, dt)
+        if pygame.K_s in list_of_keys:
+            self.direction = DOWN
+            self.attemptMove(DOWN, list_of_entities, dt)
+        if pygame.K_a in list_of_keys:
+            self.direction = LEFT
+            self.attemptMove(LEFT, list_of_entities, dt)
+        if pygame.K_d in list_of_keys:
+            self.direction = RIGHT
+            self.attemptMove(RIGHT, list_of_entities, dt)
+
         if pygame.K_UP in list_of_keys:
             self.direction = UP
             if not pygame.K_UP in self.tmp_key_list:
@@ -229,21 +243,18 @@ class Player(EntityBase):
             self.direction = RIGHT
             if not pygame.K_RIGHT in self.tmp_key_list:
                 self.tmp_key_list.append(pygame.K_RIGHT)
-        if not pygame.K_RIGHT in list_of_keys and not pygame.K_DOWN in list_of_keys and not pygame.K_LEFT in list_of_keys and not pygame.K_UP in list_of_keys:
-            self.direction = IDLE
 
         if pygame.K_DOWN in list_of_keys or pygame.K_UP in list_of_keys or pygame.K_LEFT in list_of_keys or pygame.K_RIGHT in list_of_keys:
             if self.cur_delay == 0:
                 self.attack(list_of_entities)
 
-        if pygame.K_w in list_of_keys:
-            self.attemptMove(UP, list_of_entities, dt)
-        if pygame.K_s in list_of_keys:
-            self.attemptMove(DOWN, list_of_entities, dt)
-        if pygame.K_a in list_of_keys:
-            self.attemptMove(LEFT, list_of_entities, dt)
-        if pygame.K_d in list_of_keys:
-            self.attemptMove(RIGHT, list_of_entities, dt)
+
+
+
+        if not pygame.K_w in list_of_keys and not pygame.K_a in list_of_keys and not pygame.K_d in list_of_keys and not pygame.K_s in list_of_keys and pygame.K_DOWN in list_of_keys or pygame.K_UP in list_of_keys or pygame.K_LEFT in list_of_keys or pygame.K_RIGHT in list_of_keys:
+            self.direction = IDLE
+
+        self.anim.update(dt)
 
     def attemptMove(self, direction, list_of_entities, dt):
         new_position = self.pos + direction
@@ -269,7 +280,10 @@ class Player(EntityBase):
 
 
     def render(self, surface):
-        pygame.draw.circle(surface, (255, 0, 0), (int(self.pos.x), int(self.pos.y)), 20)
+        #pygame.draw.circle(surface, (255, 0, 0), (int(self.pos.x), int(self.pos.y)), 20)
+        img = self.anim.getimg()
+        surface.blit(img, (self.pos.x - img.get_width()/2, self.pos.y - img.get_height()/2))
+
         for i in self.sub_entities:
             i.render(surface)
         for i in self.particles:

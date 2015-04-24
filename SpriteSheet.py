@@ -1,11 +1,16 @@
-from EntitiyClasses import *
+from EntityClasses import *
 from mymath import *
 import math
 import pygame
 
+DOWN = mymath.Vector2(0, 1)
+UP = mymath.Vector2(0, -1)
+RIGHT = mymath.Vector2(1, 0)
+LEFT = mymath.Vector2(-1, 0)
+IDLE = mymath.Vector2(0, 0)
 
 class Imgload(object):
-    def __init__(self, imglocation, width=64, height=64, name="None"):
+    def __init__(self, imglocation="Assets/Graphics/Players/PlaceHolder.png", width=64, height=64, name="None"):
 
         """
         :param imglocation: refers to the location of an image file on the machine
@@ -42,8 +47,9 @@ class Animate(object):
         self.Entity = entity
         self.SpriteSheet = sprites
         self.frame = 0
+        self.forward = True
 
-    def getimg(self):
+    def getimg(self, size=32):
         """
 
         :return: returns a single image based on the current frame and direction
@@ -51,40 +57,53 @@ class Animate(object):
         tmplist = []
 
         if self.Entity.direction == RIGHT:
-            for i in range(0, 2):
+            for i in range(0, 3):
                 tmplist.append(self.SpriteSheet[i])
 
         if self.Entity.direction == UP:
-            for i in range(3, 5):
+            for i in range(3, 6):
                 tmplist.append(self.SpriteSheet[i])
 
         if self.Entity.direction == LEFT:
-            for i in range(6, 8):
+            for i in range(6, 9):
                 tmplist.append(self.SpriteSheet[i])
 
         if self.Entity.direction == DOWN:
-            for i in range(9, 11):
+            for i in range(9, 12):
                 tmplist.append(self.SpriteSheet[i])
 
+        if self.Entity.direction == IDLE:
+            for i in range(0, 3):
+                tmplist.append(self.SpriteSheet[1])
+
+        tmptmplist = []
+        for i in tmplist:
+            tmptmplist.append(pygame.transform.scale(i, (size, size)))
+
+
         if self.Entity.direction != IDLE:
-            return tmplist[math.floor(self.frame)]
+            return tmptmplist[math.floor(self.frame)]
         else:
-            return tmplist[1]
+            return tmptmplist[1]
 
     def update(self, dtime):
-        k = 1  # magnitude
-        forward = True
+        k = 2  # magnitude
+
 
         if self.frame <= 0:
-            forward = True
-
+            self.forward = True
         elif self.frame >= 3:
-            forward = False
+            self.forward = False
 
-        if forward:
-            self.frame += (self.Entity.speed * dtime) * k
+        if self.forward:
+            self.frame += (self.Entity.speed * dtime / 1000) * k
         else:
-            self.frame -= (self.Entity.speed * dtime) * k
+            self.frame -= (self.Entity.speed * dtime / 1000) * k
+
+        if self.frame >= 3:
+            self.frame = 3 - 0.0000001
+        if self.frame < 0:
+            self.frame = 0
 
 
 if __name__ == "__main__":  # Testing
