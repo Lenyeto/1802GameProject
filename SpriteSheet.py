@@ -87,23 +87,21 @@ class Animate(object):
             return tmptmplist[1]
 
     def update(self, dtime):
-        k = 2  # magnitude
-
-
-        if self.frame <= 0:
-            self.forward = True
-        elif self.frame >= 3:
-            self.forward = False
+        k = 15  # magnitude
 
         if self.forward:
             self.frame += (self.Entity.speed * dtime / 1000) * k
         else:
             self.frame -= (self.Entity.speed * dtime / 1000) * k
 
-        if self.frame >= 3:
-            self.frame = 3 - 0.0000001
-        if self.frame < 0:
+        if self.frame <= 0:
             self.frame = 0
+            self.forward = True
+        elif self.frame >= 3:
+            self.frame = 2
+            self.forward = False
+
+
 
 
 if __name__ == "__main__":  # Testing
@@ -111,7 +109,7 @@ if __name__ == "__main__":  # Testing
     win = pygame.display.set_mode((800, 600))
     clock = pygame.time.Clock()
     keys = []
-    player = Player()
+    player = Player(Vector2(100, 100))
 
     done = False
     while not done:
