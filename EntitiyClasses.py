@@ -26,6 +26,7 @@ DOWN = mymath.Vector2(0, 1)
 UP = mymath.Vector2(0, -1)
 RIGHT = mymath.Vector2(1, 0)
 LEFT = mymath.Vector2(-1, 0)
+IDLE = mymath.Vector2(0, 0)
 
 
 class EntityBase(object):
@@ -176,21 +177,19 @@ class Player(EntityBase):
         self.particles = []
 
 
+
         self.tmp_key_list = []
 
         #if debug:
         self.equipment[EQUIP_WEAPON] = Equipment()
         self.equipment[EQUIP_WEAPON].equipPrimary("Longsword")
 
+        self.stats = [self.health, self.equipment[EQUIP_WEAPON].primary['damage'], self.speed, self.equipment[EQUIP_WEAPON].primary['knockback']]
+
 
     def update(self, dt, list_of_keys, list_of_entities):
-        #equip_weight_sum = 0
-        #for i in self.equipment:
-        #    if not i == -1 and not isinstance(i, list):
-        #        equip_weight_sum += i.weight / 10
-        #self.speed = 0.4 - equip_weight_sum
-        #if self.speed < 0.05:
-        #    self.speed = 0.05
+
+        self.stats = [self.health, self.equipment[EQUIP_WEAPON].primary['damage'], self.speed, self.equipment[EQUIP_WEAPON].primary['knockback']]
 
 
 
@@ -230,6 +229,8 @@ class Player(EntityBase):
             self.direction = RIGHT
             if not pygame.K_RIGHT in self.tmp_key_list:
                 self.tmp_key_list.append(pygame.K_RIGHT)
+        if not pygame.K_RIGHT in list_of_keys and not pygame.K_DOWN in list_of_keys and not pygame.K_LEFT in list_of_keys and not pygame.K_UP in list_of_keys:
+            self.direction = IDLE
 
         if pygame.K_DOWN in list_of_keys or pygame.K_UP in list_of_keys or pygame.K_LEFT in list_of_keys or pygame.K_RIGHT in list_of_keys:
             if self.cur_delay == 0:
