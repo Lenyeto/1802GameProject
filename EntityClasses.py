@@ -251,7 +251,7 @@ class Player(EntityBase):
 
 
 
-        if not pygame.K_w in list_of_keys and not pygame.K_a in list_of_keys and not pygame.K_d in list_of_keys and not pygame.K_s in list_of_keys and pygame.K_DOWN in list_of_keys or pygame.K_UP in list_of_keys or pygame.K_LEFT in list_of_keys or pygame.K_RIGHT in list_of_keys:
+        if not pygame.K_w in list_of_keys and not pygame.K_a in list_of_keys and not pygame.K_d in list_of_keys and not pygame.K_s in list_of_keys and not pygame.K_DOWN in list_of_keys and not pygame.K_UP in list_of_keys and not pygame.K_LEFT in list_of_keys and not pygame.K_RIGHT in list_of_keys:
             self.direction = IDLE
 
         self.anim.update(dt)

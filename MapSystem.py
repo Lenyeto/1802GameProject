@@ -132,9 +132,9 @@ class Room(object):
                         self.entities.append(Wall_Floor("Wall", Vector2(i * 32, k * 32), path+"WestWall.png"))
                     if not i == 0 and k == 0 and not i == surface.get_width()/32 - 1:
                         self.entities.append(Wall_Floor("Wall", Vector2(i * 32, k * 32), path+"NorthWall.png"))
-                    if i == surface.get_width()/32 -1 and not k == 0 and not k == surface.get_height()/32 -1:
+                    if i == surface.get_width()/32 - 1 and not k == 0 and not k == surface.get_height()/32 -1:
                         self.entities.append(Wall_Floor("Wall", Vector2(i * 32, k * 32), path+"EastWall.png"))
-                    if k == surface.get_height()/32 -1 and not i == 0 and not i == surface.get_width()/32 - 1:
+                    if k == surface.get_height()/32 - 1 and not i == 0 and not i == surface.get_width()/32 - 1:
                         self.entities.append(Wall_Floor("Wall", Vector2(i * 32, k * 32), path+"SouthWall.png"))
         if self.doors[0]:
             self.entities.append(Wall_Floor("Door", Vector2(surface.get_width() - 32, surface.get_height()/2 - 16), path + "EastDoor.png"))
