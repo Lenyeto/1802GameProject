@@ -54,27 +54,30 @@ class Animate(object):
 
         :return: returns a single image based on the current frame and direction
         """
-        tmplist = []
+        tmplist = self.SpriteSheet
+
 
         if self.Entity.direction == RIGHT:
+            tmplist = []
             for i in range(0, 3):
                 tmplist.append(self.SpriteSheet[i])
 
         if self.Entity.direction == UP:
+            tmplist = []
             for i in range(3, 6):
                 tmplist.append(self.SpriteSheet[i])
 
         if self.Entity.direction == LEFT:
+            tmplist = []
             for i in range(6, 9):
                 tmplist.append(self.SpriteSheet[i])
 
         if self.Entity.direction == DOWN:
+            tmplist = []
             for i in range(9, 12):
                 tmplist.append(self.SpriteSheet[i])
 
-        if self.Entity.direction == IDLE:
-            for i in range(0, 3):
-                tmplist.append(self.SpriteSheet[1])
+
 
         tmptmplist = []
         for i in tmplist:
