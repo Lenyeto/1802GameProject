@@ -56,23 +56,22 @@ class Animate(object):
         """
         tmplist = self.SpriteSheet
 
-
         if self.Entity.direction == RIGHT:
             tmplist = []
             for i in range(0, 3):
                 tmplist.append(self.SpriteSheet[i])
 
-        if self.Entity.direction == UP:
+        elif self.Entity.direction == UP:
             tmplist = []
             for i in range(3, 6):
                 tmplist.append(self.SpriteSheet[i])
 
-        if self.Entity.direction == LEFT:
+        elif self.Entity.direction == LEFT:
             tmplist = []
             for i in range(6, 9):
                 tmplist.append(self.SpriteSheet[i])
 
-        if self.Entity.direction == DOWN:
+        elif self.Entity.direction == DOWN:
             tmplist = []
             for i in range(9, 12):
                 tmplist.append(self.SpriteSheet[i])
@@ -87,15 +86,21 @@ class Animate(object):
         if self.Entity.direction != IDLE:
             return tmptmplist[math.floor(self.frame)]
         else:
-            return tmptmplist[1]
+            return tmptmplist[11]
 
     def update(self, dtime):
         k = 15  # magnitude
 
         if self.forward:
-            self.frame += (self.Entity.speed * dtime / 1000) * k
+            if self.Entity.direction != IDLE:
+                self.frame += (self.Entity.speed * dtime / 1000) * k
+            else:
+                self.frame = 2
         else:
-            self.frame -= (self.Entity.speed * dtime / 1000) * k
+            if self.Entity.direction != IDLE:
+                self.frame -= (self.Entity.speed * dtime / 1000) * k
+            else:
+                self.frame = 2
 
         if self.frame <= 0:
             self.frame = 0
