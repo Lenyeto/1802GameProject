@@ -86,7 +86,6 @@ class CosProjectile(Projectile):
 
     def update(self, dt, entityList):
         self.acum += dt
-        # FIX TO WORK DOWNWARDS
         self.velocity.y = math.cos(self.acum) * 100
         if Projectile.update(self, dt, entityList):
             return True
@@ -377,6 +376,8 @@ class Dummy(EntityBase):
         self.show_health = 0
         self.speed = 0.01
         self.target = None
+        self.AIList = [self.aggressive, self.coward, self.passive]
+        self.AIType = random.choice(self.AIList)
 
     def hit(self, damage, knockback=mymath.Vector2(0, 0)):
         self.health -= damage
@@ -384,13 +385,33 @@ class Dummy(EntityBase):
         self.show_health = 10
 
     def attemptMove(self, direction, players, dt):
-        new_position = self.pos + direction
+        for e in players:
+            playerpos = e.pos
+        new_position = self.AIType(self.pos, playerpos, dt)
         for e in players:
             tmp = new_position - e.pos
             if tmp.Dot(tmp) < 40**2:
                 return False
         self.pos += direction * dt * self.speed
         return True
+
+    def aggressive(self, pos, playerpos, dt):
+        direction = playerpos - pos
+        direction = direction.getNormalized()
+        pos += self.speed * direction * dt
+        return pos
+
+    def coward(self, pos, playerpos, dt):
+        direction = playerpos - pos
+        direction = -direction.getNormalized()
+        pos += self.speed * direction * dt * 2
+        return pos
+
+    def passive(self, pos, playerpos, dt):
+        direction = playerpos - pos
+        direction = -direction.getNormalized()
+        pos += self.speed * direction * dt
+        return pos
 
     def update(self, dt):
         if self.invincible > 0:

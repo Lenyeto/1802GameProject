@@ -147,3 +147,9 @@ class Vector2(object):
         if self.x == other.x and self.y == other.y:
             return True
         return False
+
+    def __neg__(self):
+        c = self.copy()
+        c.x = -c.x
+        c.y = -c.y
+        return c
