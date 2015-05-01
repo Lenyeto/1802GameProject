@@ -50,6 +50,18 @@ class Text(HUD_Element):
     def __init__(self, pos=Vector2(0, 0)):
         HUD_Element.__init__(self, pos)
 
+class MiniMap(HUD_Element):
+    def __init__(self, pos=Vector2(0, 0)):
+        HUD_Element.__init__(self, pos)
+
+    def render(self, surface, floor):
+        newSurface = pygame.Surface((160, 160))
+        pygame.draw.rect()
+        center = floor.cur_room.pos
+        for i in range(floor.rooms):
+            pygame.draw.rect()
+        surface.blit(newSurface, self.pos)
+
 class HUD(object):
     def __init__(self, players=[]):
         self.players = players
@@ -73,6 +85,8 @@ class HUD(object):
     def render(self, surface):
         for i in self.Elements:
             i.render(surface)
+
+
 
 if __name__ == "__main__":
     import EntityClasses
