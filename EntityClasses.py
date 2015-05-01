@@ -276,6 +276,10 @@ class Player(EntityBase):
                     if newDist < 40**2 and newDist < oldDist:
                         return False
         self.pos += direction * dt * self.speed
+        self.pos.x = min (self.pos.x, 590)
+        self.pos.x = max (48, self.pos.x)
+        self.pos.y = min (self.pos.y, 590)
+        self.pos.y = max (48, self.pos.y)
         return True
 
 
@@ -395,6 +399,10 @@ class Dummy(EntityBase):
             if tmp.Dot(tmp) < 40**2:
                 return False
         self.pos += direction * dt * self.speed
+        self.pos.x = min (self.pos.x, 590)
+        self.pos.x = max (48, self.pos.x)
+        self.pos.y = min (self.pos.y, 590)
+        self.pos.y = max (48, self.pos.y)
         return True
 
     def aggressive(self, pos, playerpos, dt):
@@ -410,6 +418,10 @@ class Dummy(EntityBase):
         return pos
 
     def passive(self, pos, playerpos, dt):
+        if self.health < 100:
+            newlist = [self.aggressive, self.coward]
+            self.speed = .1
+            self.AIType = random.choice(newlist)
         direction = playerpos - pos
         direction = -direction.getNormalized()
         pos += self.speed * direction * dt
