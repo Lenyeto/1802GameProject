@@ -20,6 +20,7 @@ class Floor(object):
         self.cur_room = self.rooms[0]
         self.create_doors()
         self.cur_room.generate_room(surface)
+        self.isEmpty = False
 
 
 
@@ -29,8 +30,7 @@ class Floor(object):
         while i < self.num_rooms:
             cur_room = self.rooms[-1]
             rnd = random.randint(0, 3)
-            if len(self.rooms) <= self.num_rooms:# - 3:
-                print(len(self.rooms))
+            if len(self.rooms) <= self.num_rooms:
                 if rnd == 0:
                     if self.check_if_full(Vector2(cur_room.position.x + 1, cur_room.position.y)) == False:
                         self.rooms.append(Room(self.type, Vector2(cur_room.position.x + 1, cur_room.position.y)))
@@ -47,14 +47,42 @@ class Floor(object):
                     if not self.check_if_full(Vector2(cur_room.position.x, cur_room.position.y - 1)):
                         self.rooms.append(Room(self.type, Vector2(cur_room.position.x, cur_room.position.y - 1)))
                         i += 1
-            #elif len(self.rooms) < self.num_rooms - 1:
-            #    # Creates Item Rooms
-            #    pass
-            #elif len(self.rooms) < self.num_rooms:
-            #    # Creates Boss Room
-            #    pass
+
+    def add_room(self):
+        i = 0
+        while i < self.num_rooms:
+            cur_room = self.rooms[i]
+            rnd = random.randint(0, 3)
+            if rnd == 0:
+                if not self.check_if_full(Vector2(cur_room.position.x + 1, cur_room.position.y)):
+                        self.rooms.append(Room("BOSS", Vector2(cur_room.position.x + 1, cur_room.position.y)))
+                        break
+                elif rnd == 1:
+                    if not self.check_if_full(Vector2(cur_room.position.x, cur_room.position.y + 1)):
+                        self.rooms.append(Room("BOSS", Vector2(cur_room.position.x, cur_room.position.y + 1)))
+                        break
+                elif rnd == 2:
+                    if not self.check_if_full(Vector2(cur_room.position.x - 1, cur_room.position.y)):
+                        self.rooms.append(Room("BOSS", Vector2(cur_room.position.x - 1, cur_room.position.y)))
+                        break
+                else:
+                    if not self.check_if_full(Vector2(cur_room.position.x, cur_room.position.y - 1)):
+                        self.rooms.append(Room("BOSS", Vector2(cur_room.position.x, cur_room.position.y - 1)))
+                        break
+        self.num_rooms += 1
+        self.create_doors()
 
     def update(self, list_of_players, surface):
+        if not self.isEmpty:
+            empty = True
+            for i in self.rooms:
+                if not i.isEmpty:
+                    empty = False
+            if empty:
+                self.isEmpty = True
+            if self.isEmpty:
+                self.add_room()
+
         move = self.cur_room.update(list_of_players)
         if not move == Vector2(0, 0):
             bool = self.check_if_full(self.cur_room.position + move)
@@ -98,18 +126,18 @@ class Floor(object):
 class Room(object):
     def __init__(self, type, position=Vector2(0, 0)):
         self.entities = []
+        self.type = type
         self.can_leave = False
         self.position = position
         self.doors = [False, False, False, False]
         self.door_pos = [Vector2(0, 0), Vector2(0, 0), Vector2(0,0), Vector2(0, 0)]
-        self.empty = False
+        self.isEmpty = False
 
-    def generate_room(self, surface, type=DEBUG):
-        self.create_walls(surface, type)
-        self.generate_entities(surface, type)
+    def generate_room(self, surface):
+        self.create_walls(surface, self.type)
+        if not self.isEmpty:
+            self.generate_entities(surface, self.type)
 
-    def regenerate_room(self, surface, type=DEBUG):
-        self.create_walls(surface, type)
 
 
     def create_walls(self, surface, type=DEBUG):
@@ -117,6 +145,8 @@ class Room(object):
             for k in range(int(surface.get_height()/32)):
                 if type == DEBUG:
                     path = "Assets/Graphics/Room/"
+                elif type == "BOSS":
+                    path = "Assets/Graphics/BossRoom/"
                 if i == 0 and k == 0:
                     self.entities.append(Wall_Floor("Wall", Vector2(0, 0), path+"NorthWestWall.png"))
                 elif i == surface.get_width()/32 - 1 and k == surface.get_height()/32 - 1:
@@ -150,8 +180,15 @@ class Room(object):
             self.door_pos[3] = Vector2(surface.get_width()/2 - 16, surface.get_height() - 16)
 
     def generate_entities(self, surface, type):
-        self.entities.append(Dummy(mymath.Vector2(200, 200)))
-        self.entities.append(WeaponStand(equipment.Equipment().equipPrimary("Short Bow"), mymath.Vector2(50, 50)))
+        if type == DEBUG:
+            self.entities.append(Dummy(mymath.Vector2(200, 200)))
+            self.entities.append(WeaponStand(equipment.Equipment().equipPrimary("Short Bow"), mymath.Vector2(50, 50)))
+        if type == "BOSS":
+            self.entities.append(Dummy(mymath.Vector2(200, 200)))
+            self.entities.append(Dummy(mymath.Vector2(400, 400)))
+            self.entities.append(Dummy(mymath.Vector2(200, 400)))
+            self.entities.append(Dummy(mymath.Vector2(400, 200)))
+            self.entities.append(Boss(mymath.Vector2(300, 300)))
 
     def render(self, surface):
         for e in self.entities:
@@ -167,6 +204,7 @@ class Room(object):
                 self.can_leave = False
             else:
                 self.can_leave = True
+                self.isEmpty = True
         else:
             for i in list_of_players:
                 for j in range(len(self.door_pos)):

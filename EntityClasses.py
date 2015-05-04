@@ -371,7 +371,80 @@ class WeaponStand(ItemStand):
         tmpImage = pygame.image.load(self.item.primary['icon'])
         surface.blit(tmpImage, (int(self.pos.x - tmpImage.get_width()/2), int(self.pos.y - tmpImage.get_height()/2)))
 
+class Boss(EntityBase):
+    def __init__(self, pos):
+        EntityBase.__init__(self, "ENEMY", pos)
+        self.health = 1000
+        self.invincible = 0
+        self.show_health = 0
+        self.speed = 0.01
+        self.target = None
+        self.AIType = self.aggressive
 
+    def hit(self, damage, knockback=mymath.Vector2(0, 0)):
+        self.health -= damage
+        self.pos += knockback
+        self.show_health = 10
+
+    def attemptMove(self, direction, players, dt):
+        for e in players:
+            playerpos = e.pos
+        new_position = self.AIType(self.pos, playerpos, dt)
+        for e in players:
+            tmp = new_position - e.pos
+            if tmp.Dot(tmp) < 40**2:
+                return False
+        self.pos += direction * dt * self.speed
+        self.pos.x = min (self.pos.x, 590)
+        self.pos.x = max (48, self.pos.x)
+        self.pos.y = min (self.pos.y, 590)
+        self.pos.y = max (48, self.pos.y)
+        return True
+
+    def aggressive(self, pos, playerpos, dt):
+        direction = playerpos - pos
+        direction = direction.getNormalized()
+        pos += self.speed * direction * dt
+        return pos
+
+    def update(self, dt):
+        if self.invincible > 0:
+            self.invincible -= dt
+        if self.invincible < 0:
+            self.invincible = 0
+        if self.show_health > 0:
+            self.show_health -= dt
+        if self.show_health < 0:
+            self.show_health = 0
+        if self.health <= 0:
+            return True
+        #self.velocity.x = math.cos(dt) * dt
+        self.pos += self.velocity
+        return False
+
+    def render(self, surface):
+        pygame.draw.circle(surface, (255, 0, 0), (int(self.pos.x), int(self.pos.y)), 40)
+        #if self.show_health > 0:
+        tmpX = 40
+        tmpX *= self.health / 500
+        pygame.draw.rect(surface, (125, 125, 125), (int(self.pos.x) - tmpX/2, int(self.pos.y - 10) - 40, tmpX, 5))
+
+    def AI(self, players, dt):
+        if self.target == None:
+            if len(players) > 1:
+                distList = []
+                distList2 = players.copy()
+                for p in players:
+                    tmp = self.pos - p.pos
+                    dist = tmp.Dot(tmp)
+                    distList.append(dist)
+                distList.sort()
+                distList2.index(distList[0])
+            else:
+                self.target = players[0]
+        else:
+            dir = (self.target.pos - self.pos).getNormalized()
+            self.attemptMove(dir, players, dt)
 
 class Dummy(EntityBase):
     def __init__(self, pos):
